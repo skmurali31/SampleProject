@@ -1,0 +1,145 @@
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(function(){
+$("#txtInput").focus(function(){ fnNumberConversion(); fnDeformat(); });
+$("#txtInput").blur(function(){ fnNumberConversion(); fnDeformat();});
+});
+
+
+    // Number Format Config
+    var currencySymbol = 'Rs: ';
+    var _deciSeparator = ',';
+    var amtSeparator = '.';
+    var amtSplitUpFormat = '3,2';
+    var _deciPlaceDigit = '2';
+
+
+    function fnNumberConversion() {	
+        $("#lblResult").text('');
+        var afterPoint = '';
+        var conValue, resultValue = '';
+        var newVal;
+        var separatorArr;
+
+        //Input Value
+        //var value = parseFloat($("#txtInput").val());  //parseFloat('1234567890');
+		var value = $("#txtInput").val(); 
+
+        // Set Decimal Point based on decimal point config
+        //newVal = value.toFixed(parseInt(_deciPlaceDigit));
+        conValue = value.toString();
+
+		if (_deciSeparator != '.') {
+
+        if (conValue.indexOf(_deciSeparator) == -1) { conValue = conValue + _deciSeparator + "00"; }
+
+        conValue = conValue.split('.').join(',');
+
+        if (conValue.indexOf(_deciSeparator) > 0) {
+            afterPoint = conValue.substring(conValue.indexOf(_deciSeparator) + 1, conValue.length);
+        }
+        var beforPoint = conValue.substring(0, conValue.indexOf(_deciSeparator));
+
+        var actualVal = parseFloat(beforPoint + '.' + afterPoint).toFixed(parseInt(_deciPlaceDigit));
+        afterPoint = actualVal.substring(actualVal.indexOf('.') + 1, actualVal.length)
+
+        conValue = Math.floor(beforPoint);
+        conValue = conValue.toString();
+    }
+    else {
+        if (conValue.indexOf(_deciSeparator) > 0) { afterPoint = conValue.substring(conValue.indexOf(_deciSeparator) + 1, conValue.length); }
+        conValue = Math.floor(conValue);
+        conValue = conValue.toString();
+    }
+
+        separatorArr = amtSplitUpFormat.split(',');
+
+        for (var i = 0; i < separatorArr.length; i++) {
+            if (!conValue.length > 0) { break; }
+            var lastDigits = conValue.substring(conValue.length - separatorArr[i]);
+            conValue = conValue.substring(0, conValue.length - separatorArr[i]);
+          
+			if (conValue.length > 0) { resultValue = amtSeparator + lastDigits + resultValue; }
+			else { resultValue = lastDigits + resultValue }
+            
+
+            if (separatorArr.length == i + 1 && conValue.length > 0) { separatorArr.push(separatorArr[i]); }
+        }
+
+        resultValue = currencySymbol + resultValue + _deciSeparator + afterPoint;
+
+        //alert(resultValue);
+        $("#lblResult").text(resultValue);
+        return;
+    }
+		
+	function fnDeformat(){
+	    var val = $("#lblResult").text();
+        val = val.split(amtSeparator).join('');
+        val = val.split(currencySymbol).join('');
+
+        if (_deciSeparator != "."  ) { val = val.split(_deciSeparator).join('.'); }
+		
+    $("#lblActualVal").text(val);
+    //return parseFloat(val);
+	
+	}
+</script>
+
+<script>
+function fnCheck(){
+alert(0 == 0.00)
+	var val = 'Rs: 345,34,52,345.234'
+	
+	var amtReg = new RegExp(amtSeparator,"g");
+    var decReg = new RegExp(_deciSeparator,"g");
+	
+	var res = val.replace(currencySymbol, '').replace(amtReg, '');
+	if(_deciSeparator != '.'){res = res.replace(decReg, '.')}	
+	alert(val);
+	alert(res);
+		
+    return val.replace(currencySymbol, '').replace(amtReg, '').replace(decReg, '.');
+
+	alert(val.replace(currencySymbol, '').replace(amtReg, '').replace(decReg, '.'));
+	
+    return val.replace(currencySymbol, '').replace(amtReg, '').replace(decReg, '.');
+	
+	
+	
+	var resultValue = '';
+	alert(resultValue);
+	//method-1
+    var b  = resultValue.replace(currencySymbol, '').split(amtSeparator).join('');
+	alert(b);
+
+    //method-2
+    var regex = new RegExp(amtSeparator, 'g');
+    var c = resultValue.replace(currencySymbol, '').replace(regex, '');
+	alert(resultValue + '<br />' + b + '<br />' + c);
+	alert(c);
+	
+	return;
+	
+	alert(a);
+	alert(a.split(amtSeparator).join(''));
+	return;
+	var b= '/' +amtSeparator+ '/g';
+	alert(a.replace(b,''));
+	
+	var regex = new RegExp(amtSeparator, 'g');
+	alert(a.replace(regex,''));
+	return;
+}
+</script>
+<div style="border:1px solid;padding-left:10px;">
+    <h3>Number Conversion</h3>
+    <input id="txtInput" type="text" />
+    <a href="#" onclick="fnNumberConversion();">Convert</a>
+    <br />
+    <label>Converted Value----- </label><label id="lblResult"></label>
+	<br/>
+	<label>Actual Value------- </label><label id="lblActualVal"></label>
+</div>
+</html>
